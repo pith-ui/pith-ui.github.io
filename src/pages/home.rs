@@ -5,7 +5,7 @@ use pith_ui::separator::Separator;
 #[component]
 pub fn Home() -> impl IntoView {
     view! {
-        <div>
+        <main id="main-content">
             // Hero
             <section class="relative overflow-hidden border-b border-slate-200 bg-gradient-to-b from-accent-50/50 to-white">
                 <div class="mx-auto max-w-7xl px-6 py-24 lg:py-32">
@@ -20,13 +20,13 @@ pub fn Home() -> impl IntoView {
                         <div class="mt-10 flex items-center justify-center gap-4">
                             <A
                                 href="/docs/getting-started"
-                                attr:class="rounded-lg bg-accent-600 px-5 py-2.5 text-sm font-semibold text-white no-underline shadow-sm hover:bg-accent-700 transition-colors"
+                                attr:class="rounded-lg bg-accent-600 px-5 py-2.5 text-sm font-semibold text-white no-underline shadow-sm hover:bg-accent-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 transition-colors"
                             >
                                 "Get Started"
                             </A>
                             <A
                                 href="/docs/components"
-                                attr:class="rounded-lg border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 no-underline shadow-sm hover:bg-slate-50 transition-colors"
+                                attr:class="rounded-lg border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 no-underline shadow-sm hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 transition-colors"
                             >
                                 "View Components"
                             </A>
@@ -115,10 +115,10 @@ pub fn Home() -> impl IntoView {
             // Footer
             <footer class="border-t border-slate-200 py-12">
                 <div class="mx-auto max-w-7xl px-6 text-center">
-                    <p class="text-sm text-slate-500">"MIT License. Built with Leptos."</p>
+                    <p class="text-sm text-slate-600">"MIT License. Built with Leptos."</p>
                 </div>
             </footer>
-        </div>
+        </main>
     }
 }
 
@@ -140,7 +140,7 @@ fn ComponentCard(name: &'static str, href: &'static str) -> impl IntoView {
     view! {
         <A
             href=href
-            attr:class="group rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-700 no-underline hover:border-accent-300 hover:bg-accent-50 hover:text-accent-700 transition-all"
+            attr:class="group rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-700 no-underline hover:border-accent-300 hover:bg-accent-50 hover:text-accent-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 transition-all"
         >
             {name}
         </A>

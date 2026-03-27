@@ -3,26 +3,41 @@ use leptos_router::{
     components::{A, Outlet},
     hooks::use_location,
 };
+
+/// Skip-to-content link — first focusable element on the page.
+#[component]
+pub fn SkipLink() -> impl IntoView {
+    view! {
+        <a
+            href="#main-content"
+            class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-accent-600 focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white focus:shadow-lg"
+        >
+            "Skip to main content"
+        </a>
+    }
+}
+
 #[component]
 pub fn SiteHeader() -> impl IntoView {
     view! {
+        <SkipLink />
         <header class="sticky top-0 z-50 border-b border-slate-200 bg-white/80 backdrop-blur-sm">
             <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
-                <A href="/" attr:class="flex items-center gap-2 text-xl font-bold text-slate-900 no-underline hover:text-accent-600 transition-colors">
+                <A href="/" attr:class="flex items-center gap-2 text-xl font-bold text-slate-900 no-underline hover:text-accent-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 rounded-sm transition-colors">
                     "Pith UI"
                 </A>
-                <nav class="flex items-center gap-6">
-                    <A href="/docs/getting-started" attr:class="text-sm font-medium text-slate-600 no-underline hover:text-slate-900 transition-colors">
+                <nav aria-label="Main" class="flex items-center gap-6">
+                    <A href="/docs/getting-started" attr:class="text-sm font-medium text-slate-600 no-underline hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 rounded-sm transition-colors">
                         "Docs"
                     </A>
-                    <A href="/docs/components" attr:class="text-sm font-medium text-slate-600 no-underline hover:text-slate-900 transition-colors">
+                    <A href="/docs/components" attr:class="text-sm font-medium text-slate-600 no-underline hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 rounded-sm transition-colors">
                         "Components"
                     </A>
                     <a
                         href="https://github.com/pith-ui/pith-ui"
                         target="_blank"
                         rel="noopener noreferrer"
-                        class="text-sm font-medium text-slate-600 no-underline hover:text-slate-900 transition-colors"
+                        class="text-sm font-medium text-slate-600 no-underline hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 rounded-sm transition-colors"
                     >
                         "GitHub"
                     </a>
@@ -128,14 +143,17 @@ pub fn DocsLayout() -> impl IntoView {
     view! {
         <div class="mx-auto flex max-w-7xl">
             <aside class="sticky top-16 hidden h-[calc(100vh-4rem)] w-64 shrink-0 overflow-y-auto border-r border-slate-200 px-4 py-8 md:block">
-                <nav class="space-y-6">
+                <nav aria-label="Docs sidebar" class="space-y-6">
                     {NAV_GROUPS.iter().map(|group| {
                         view! {
-                            <div>
-                                <h3 class="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-500">
+                            <div role="group" aria-labelledby=format!("nav-group-{}", group.title.to_lowercase().replace(' ', "-"))>
+                                <p
+                                    id=format!("nav-group-{}", group.title.to_lowercase().replace(' ', "-"))
+                                    class="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-500"
+                                >
                                     {group.title}
-                                </h3>
-                                <ul class="space-y-1">
+                                </p>
+                                <ul class="space-y-1" role="list">
                                     {group.items.iter().map(|item| {
                                         let href = item.href;
                                         let label = item.label;
@@ -144,11 +162,12 @@ pub fn DocsLayout() -> impl IntoView {
                                             <li>
                                                 <A
                                                     href=href
+                                                    attr:aria-current=move || if is_active() { Some("page") } else { None }
                                                     attr:class=move || {
                                                         if is_active() {
-                                                            "block rounded-md bg-accent-50 px-3 py-1.5 text-sm font-medium text-accent-700 no-underline"
+                                                            "block rounded-md bg-accent-50 px-3 py-1.5 text-sm font-medium text-accent-700 no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2"
                                                         } else {
-                                                            "block rounded-md px-3 py-1.5 text-sm text-slate-600 no-underline hover:bg-slate-50 hover:text-slate-900 transition-colors"
+                                                            "block rounded-md px-3 py-1.5 text-sm text-slate-700 no-underline hover:bg-slate-50 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 transition-colors"
                                                         }
                                                     }
                                                 >
@@ -163,7 +182,7 @@ pub fn DocsLayout() -> impl IntoView {
                     }).collect_view()}
                 </nav>
             </aside>
-            <main class="min-w-0 flex-1 px-8 py-8 lg:px-12">
+            <main id="main-content" class="min-w-0 flex-1 px-8 py-8 lg:px-12">
                 <Outlet />
             </main>
         </div>
