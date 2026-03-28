@@ -14,29 +14,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Audit home page
+      - name: Run Lighthouse audits
         uses: treosh/lighthouse-ci-action@v12
-        id: lighthouse-home
+        id: lighthouse
         with:
           urls: |
             https://pith-ui.github.io/
-          uploadArtifacts: true
-          temporaryPublicStorage: true
-
-      - name: Audit docs page
-        uses: treosh/lighthouse-ci-action@v12
-        id: lighthouse-docs
-        with:
-          urls: |
             https://pith-ui.github.io/docs/getting-started
-          uploadArtifacts: true
-          temporaryPublicStorage: true
-
-      - name: Audit component page
-        uses: treosh/lighthouse-ci-action@v12
-        id: lighthouse-component
-        with:
-          urls: |
             https://pith-ui.github.io/docs/components/dialog
           uploadArtifacts: true
           temporaryPublicStorage: true
@@ -45,13 +29,12 @@ jobs:
         run: |
           echo "## Lighthouse Accessibility Scores" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| URL | Accessibility |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----|---------------|" >> $GITHUB_STEP_SUMMARY
 
-          # Parse results from each audit
-          for manifest in /tmp/lighthouse-ci-action/manifests/*.json; do
-            if [ -f "$manifest" ]; then
-              cat "$manifest" | jq -r '.[] | "| \(.url) | \(.summary.accessibility // "N/A") |"' >> $GITHUB_STEP_SUMMARY
-            fi
-          done
+          # Parse results from the audit manifest
+          MANIFEST='${{ steps.lighthouse.outputs.manifest }}'
+          echo "$MANIFEST" | jq -r '.[] | "| \(.url) | \(.summary.accessibility // "N/A") |"' >> $GITHUB_STEP_SUMMARY
 
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "Full reports are available in the workflow artifacts." >> $GITHUB_STEP_SUMMARY
