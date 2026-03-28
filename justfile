@@ -6,9 +6,9 @@ serve:
 build:
     trunk build --release
 
-# Run Lighthouse accessibility audit against all pages
+# Run Lighthouse accessibility audit against all pages (reads unlighthouse.config.ts)
 audit: _ensure-serving
-    npx unlighthouse --site http://localhost:8080 --categories accessibility
+    npx unlighthouse
 
 # Run a quick single-page Lighthouse audit
 audit-page url="http://localhost:8080":
