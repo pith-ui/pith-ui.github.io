@@ -1,17 +1,17 @@
 export default {
     site: 'http://localhost:8080',
-    // SPA: use the browser to discover content, not raw HTML
     scanner: {
         device: 'desktop',
         // Disable sitemap/robots discovery — this is a client-rendered SPA
         sitemap: false,
         robotsTxt: false,
-        // Seed with all known routes since the crawler can't discover them from static HTML
         samples: 1,
+        // Give WASM pages extra time to render
+        throttle: false,
     },
-    // Only run accessibility audits
+    // Run accessibility + best practices
     lighthouse: {
-        categories: ['accessibility'],
+        categories: ['accessibility', 'best-practices'],
     },
     urls: [
         '/',
