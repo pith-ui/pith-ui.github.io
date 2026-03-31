@@ -5,81 +5,82 @@ use pith_ui::navigation_menu::*;
 #[component]
 pub fn NavigationMenuNested() -> impl IntoView {
     view! {
-        <NavigationMenu attr:class="relative">
-            <NavigationMenuList attr:class="flex items-center gap-1 rounded-lg border border-slate-200 bg-white p-1 shadow-sm">
+        <NavigationMenu attr:class="relative min-w-max rounded-lg bg-slate-50 p-1 text-slate-900">
+            <NavigationMenuList attr:class="relative flex">
                 <NavigationMenuItem>
-                    <NavigationMenuTrigger attr:class="flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 data-[state=open]:bg-slate-100 transition-colors">
+                    <NavigationMenuTrigger attr:class="box-border flex items-center justify-center gap-1.5 h-10 px-3.5 m-0 rounded-md bg-slate-50 text-slate-900 font-medium text-base leading-6 select-none hover:bg-slate-100 active:bg-slate-100 data-[state=open]:bg-slate-100 focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-blue-800 focus-visible:relative">
                         "Overview"
-                        <svg class="h-2.5 w-2.5 transition-transform duration-200 [[data-state=open]>span>&]:rotate-180" viewBox="0 0 10 10" fill="none">
+                        <svg class="transition-transform duration-200 ease-in-out [[data-state=open]_&]:rotate-180" width="10" height="10" viewBox="0 0 10 10" fill="none">
                             <path d="M1 3.5L5 7.5L9 3.5" stroke="currentColor" stroke-width="1.5" />
                         </svg>
                     </NavigationMenuTrigger>
-                    <NavigationMenuContent attr:class="absolute left-0 top-full mt-1 w-[400px] rounded-lg border border-slate-200 bg-white p-4 shadow-lg">
-                        <ul class="grid grid-cols-2 gap-0 list-none p-0 m-0">
+
+                    <NavigationMenuContent attr:class="nav-content min-w-[400px] h-full p-6">
+                        <ul class="grid list-none grid-cols-[12rem_12rem] gap-0 p-0 m-0">
                             <li>
-                                <NavigationMenuLink attr:class="block rounded-md p-3 no-underline hover:bg-slate-50 transition-colors" attr:href="#">
-                                    <div class="text-sm font-medium text-slate-900">"Quick Start"</div>
-                                    <p class="mt-1 text-xs text-slate-500">"Install and assemble your first component."</p>
+                                <NavigationMenuLink attr:class="block rounded-md p-3 no-underline text-inherit hover:bg-slate-100 focus-visible:relative focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-blue-800" attr:href="#">
+                                    <h3 class="m-0 mb-1 text-base leading-5 font-medium">"Quick Start"</h3>
+                                    <p class="m-0 text-sm leading-5 text-slate-500">"Install and assemble your first component."</p>
                                 </NavigationMenuLink>
                             </li>
                             <li>
-                                <NavigationMenuLink attr:class="block rounded-md p-3 no-underline hover:bg-slate-50 transition-colors" attr:href="#">
-                                    <div class="text-sm font-medium text-slate-900">"Accessibility"</div>
-                                    <p class="mt-1 text-xs text-slate-500">"Learn how we build accessible components."</p>
+                                <NavigationMenuLink attr:class="block rounded-md p-3 no-underline text-inherit hover:bg-slate-100 focus-visible:relative focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-blue-800" attr:href="#">
+                                    <h3 class="m-0 mb-1 text-base leading-5 font-medium">"Accessibility"</h3>
+                                    <p class="m-0 text-sm leading-5 text-slate-500">"Learn how we build accessible components."</p>
                                 </NavigationMenuLink>
                             </li>
                             <li>
-                                <NavigationMenuLink attr:class="block rounded-md p-3 no-underline hover:bg-slate-50 transition-colors" attr:href="#">
-                                    <div class="text-sm font-medium text-slate-900">"Releases"</div>
-                                    <p class="mt-1 text-xs text-slate-500">"See what\u{2019}s new in the latest versions."</p>
+                                <NavigationMenuLink attr:class="block rounded-md p-3 no-underline text-inherit hover:bg-slate-100 focus-visible:relative focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-blue-800" attr:href="#">
+                                    <h3 class="m-0 mb-1 text-base leading-5 font-medium">"Releases"</h3>
+                                    <p class="m-0 text-sm leading-5 text-slate-500">"See what\u{2019}s new in the latest versions."</p>
                                 </NavigationMenuLink>
                             </li>
                             <li>
-                                // Nested navigation menu inside a content panel
+                                // Nested NavigationMenu for the Handbook flyout
                                 <NavigationMenu orientation=Orientation::Vertical attr:class="relative">
                                     <NavigationMenuItem>
-                                        <NavigationMenuTrigger attr:class="relative flex w-full flex-col items-start rounded-md p-3 text-left hover:bg-slate-50 data-[state=open]:bg-slate-50 transition-colors">
-                                            <span class="text-sm font-medium text-slate-900">"Handbook"</span>
-                                            <p class="mt-1 text-xs text-slate-500">"How to use Pith UI effectively."</p>
-                                            <svg class="absolute top-1/2 right-2.5 h-2.5 w-2.5 -translate-y-1/2 transition-transform duration-200 [[data-state=open]>span>&]:rotate-180" viewBox="0 0 10 10" fill="none">
+                                        <NavigationMenuTrigger attr:class="w-full text-left relative block rounded-md p-3 no-underline text-inherit hover:bg-slate-100 data-[state=open]:bg-slate-100 focus-visible:relative focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-blue-800">
+                                            <span class="m-0 mb-1 text-base leading-5 font-medium">"Handbook"</span>
+                                            <p class="m-0 text-sm leading-5 text-slate-500">"How to use Pith UI effectively."</p>
+                                            <svg class="absolute top-1/2 right-2.5 flex h-2.5 w-2.5 -translate-y-1/2 items-center justify-center transition-transform duration-200 ease-in-out [[data-state=open]_&]:rotate-180" width="10" height="10" viewBox="0 0 10 10" fill="none">
                                                 <path d="M3.5 1L7.5 5L3.5 9" stroke="currentColor" stroke-width="1.5" />
                                             </svg>
                                         </NavigationMenuTrigger>
-                                        <NavigationMenuContent attr:class="absolute left-full top-0 ml-1 w-[280px] rounded-lg border border-slate-200 bg-white p-3 shadow-lg">
-                                            <ul class="flex flex-col list-none p-0 m-0">
+                                        <NavigationMenuContent attr:class="nav-content min-w-[400px] h-full p-6">
+                                            <ul class="flex max-w-[400px] flex-col justify-center list-none p-0 m-0">
                                                 <li>
-                                                    <NavigationMenuLink attr:class="block rounded-md p-3 no-underline hover:bg-slate-50 transition-colors" attr:href="#">
-                                                        <div class="text-sm font-medium text-slate-900">"Styling"</div>
-                                                        <p class="mt-1 text-xs text-slate-500">"Style with Tailwind CSS or plain CSS."</p>
+                                                    <NavigationMenuLink attr:class="block rounded-md p-3 no-underline text-inherit hover:bg-slate-100 focus-visible:relative focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-blue-800" attr:href="#">
+                                                        <h3 class="m-0 mb-1 text-base leading-5 font-medium">"Styling"</h3>
+                                                        <p class="m-0 text-sm leading-5 text-slate-500">"Components can be styled with plain CSS, Tailwind CSS, or CSS modules."</p>
                                                     </NavigationMenuLink>
                                                 </li>
                                                 <li>
-                                                    <NavigationMenuLink attr:class="block rounded-md p-3 no-underline hover:bg-slate-50 transition-colors" attr:href="#">
-                                                        <div class="text-sm font-medium text-slate-900">"Animation"</div>
-                                                        <p class="mt-1 text-xs text-slate-500">"Animate with CSS transitions or libraries."</p>
+                                                    <NavigationMenuLink attr:class="block rounded-md p-3 no-underline text-inherit hover:bg-slate-100 focus-visible:relative focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-blue-800" attr:href="#">
+                                                        <h3 class="m-0 mb-1 text-base leading-5 font-medium">"Animation"</h3>
+                                                        <p class="m-0 text-sm leading-5 text-slate-500">"Components can be animated with CSS transitions, CSS animations, or libraries."</p>
                                                     </NavigationMenuLink>
                                                 </li>
                                                 <li>
-                                                    <NavigationMenuLink attr:class="block rounded-md p-3 no-underline hover:bg-slate-50 transition-colors" attr:href="#">
-                                                        <div class="text-sm font-medium text-slate-900">"Composition"</div>
-                                                        <p class="mt-1 text-xs text-slate-500">"Compose with your own components."</p>
+                                                    <NavigationMenuLink attr:class="block rounded-md p-3 no-underline text-inherit hover:bg-slate-100 focus-visible:relative focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-blue-800" attr:href="#">
+                                                        <h3 class="m-0 mb-1 text-base leading-5 font-medium">"Composition"</h3>
+                                                        <p class="m-0 text-sm leading-5 text-slate-500">"Components can be composed with your own existing components."</p>
                                                     </NavigationMenuLink>
                                                 </li>
                                             </ul>
                                         </NavigationMenuContent>
                                     </NavigationMenuItem>
+
+                                    <NavigationMenuViewport attr:class="nav-viewport absolute left-full top-0 z-50 ml-6 rounded-lg bg-white shadow-lg shadow-slate-200 outline outline-1 outline-slate-200 overflow-hidden" />
                                 </NavigationMenu>
                             </li>
                         </ul>
                     </NavigationMenuContent>
                 </NavigationMenuItem>
 
-                <NavigationMenuItem>
-                    <NavigationMenuLink attr:class="rounded-md px-3 py-2 text-sm font-medium text-slate-700 no-underline hover:bg-slate-100 transition-colors" attr:href="#">
-                        "GitHub"
-                    </NavigationMenuLink>
-                </NavigationMenuItem>
+
             </NavigationMenuList>
+
+            <NavigationMenuViewport attr:class="nav-viewport absolute left-0 top-full z-50 mt-2.5 rounded-lg bg-white shadow-lg shadow-slate-200 outline outline-1 outline-slate-200 overflow-hidden" />
         </NavigationMenu>
     }
 }

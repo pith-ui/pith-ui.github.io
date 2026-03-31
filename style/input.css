@@ -90,6 +90,98 @@ code[class*='language-'] {
         animation: slide-up 200ms ease-out;
     }
 
+    /* Navigation menu content animations */
+    .nav-content[data-motion='from-start'] {
+        animation: nav-enter-from-left 250ms ease;
+    }
+
+    .nav-content[data-motion='from-end'] {
+        animation: nav-enter-from-right 250ms ease;
+    }
+
+    .nav-content[data-motion='to-start'] {
+        animation: nav-exit-to-left 200ms ease;
+    }
+
+    .nav-content[data-motion='to-end'] {
+        animation: nav-exit-to-right 200ms ease;
+    }
+
+    @keyframes nav-enter-from-left {
+        from {
+            opacity: 0;
+            transform: translateX(-50%);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @keyframes nav-enter-from-right {
+        from {
+            opacity: 0;
+            transform: translateX(50%);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @keyframes nav-exit-to-left {
+        from {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        to {
+            opacity: 0;
+            transform: translateX(-50%);
+        }
+    }
+
+    @keyframes nav-exit-to-right {
+        from {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        to {
+            opacity: 0;
+            transform: translateX(50%);
+        }
+    }
+
+    /* Navigation menu viewport animation (scale + fade) */
+    .nav-viewport[data-state='open'] {
+        animation: nav-viewport-in 200ms ease-out;
+    }
+
+    .nav-viewport[data-state='closed'] {
+        animation: nav-viewport-out 150ms ease-in;
+    }
+
+    @keyframes nav-viewport-in {
+        from {
+            opacity: 0;
+            transform: scale(0.9);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    @keyframes nav-viewport-out {
+        from {
+            opacity: 1;
+            transform: scale(1);
+        }
+        to {
+            opacity: 0;
+            transform: scale(0.9);
+        }
+    }
+
     /* Collapsible animation */
     .collapsible-content[data-state='open'] {
         animation: slide-down 200ms ease-out;

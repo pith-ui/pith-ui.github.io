@@ -2,6 +2,8 @@
 
 Pith UI documentation mirrors [base-ui](https://base-ui.com) in structure, examples, and explanatory text — transliterated from React/TSX to Leptos/Rust.
 
+**Golden example**: `src/pages/components/navigation_menu/` — follow this as the reference for all other components.
+
 ## Reference material
 
 Base-ui markdown docs are downloaded to `.claude/reference/base-ui/`. The URL pattern is stable:
@@ -18,171 +20,203 @@ bash .claude/scripts/fetch-base-ui-docs.sh
 
 **Always read the corresponding base-ui markdown before writing or updating a component page.** It is the source of truth for what sections, examples, and API details to include.
 
-## What to mirror
+## Markdown-driven pages
 
-The base-ui markdown for each component has these sections. Mirror all of them:
+Each component page is driven by a single markdown file. The page's `mod.rs` is a thin wrapper that calls the markdown parser with a demo lookup closure.
 
-| Base-ui section | Pith UI equivalent |
-|---|---|
-| `# Title` + frontmatter description | `ComponentPageHeader` title + description |
-| `## Demo` (Tailwind example) | `DocSection title="Demo"` with our demo system (see root CLAUDE.md) |
-| `## Usage guidelines` | `DocSection title="Usage guidelines"` — keep the same bullet points, adapted for Leptos where needed |
-| `## Anatomy` | `DocSection title="Anatomy"` — transliterate the JSX composition example to `view!` macro syntax |
-| `## Examples` (subsections) | Additional `DocSection`s or demo sections — one per example. Match their example names and scenarios |
-| `## API reference` | `DocSection title="API Reference"` — see API reference section below |
+### File structure
 
-### Sections to skip or adapt
-
-- **CSS Modules examples**: base-ui shows both Tailwind and CSS Modules demos. We only show the Tailwind version (our demos use Tailwind classes in `const` strings).
-- **React-specific patterns**: e.g., `render` prop, `className` callbacks, `ref` forwarding. Omit these or replace with Leptos equivalents (`attr:class`, `NodeRef`, etc.).
-- **`<Meta>` tags**: base-ui includes `<Meta name="description">` for SEO. Skip — we don't use these.
-
-## Transliterating code examples
-
-When converting base-ui React/TSX to Pith UI Leptos/Rust:
-
-| React (base-ui) | Leptos (Pith UI) |
-|---|---|
-| `<Tooltip.Root>` | `<Tooltip>` |
-| `<Tooltip.Trigger>` | `<TooltipTrigger>` |
-| `<Component.Part>` | `<ComponentPart>` (PascalCase, no dot notation) |
-| `className="..."` | `attr:class=SOME_CONST` (in demos) or `attr:class="..."` |
-| `defaultChecked` | `default_checked` (snake_case props) |
-| `onCheckedChange={handler}` | `on_checked_change=handler` |
-| `sideOffset={10}` | `side_offset=10.0` (note: floats for numeric props) |
-| `{children}` | `{children()}` |
-| `<label htmlFor="x">` | `<label for="x">` |
-| String content | `"String content"` (quoted in `view!` macro) |
-| `import { X } from '@base-ui/react/x'` | `use pith_ui::x::*;` |
-| `useState` / controlled state | `RwSignal` / `create_signal` |
-
-## Demo examples
-
-Each base-ui `## Demo` and `## Examples` subsection that includes a code sample should become a demo file in the component's `demos/` directory, following the demo system documented in the root CLAUDE.md.
-
-Match the base-ui example names where possible:
-
-- Base-ui "Detached triggers" example → `tooltip_detached_triggers.rs` → `TooltipDetachedTriggersSection`
-- Base-ui "Form integration" example → `checkbox_form.rs` → `CheckboxFormSection`
-
-For the **primary demo** (the first `## Demo` in the base-ui markdown), name it `<component>_basic.rs`.
-
-## Explanatory text
-
-Mirror the base-ui prose closely. The usage guidelines, anatomy descriptions, and example explanations should read naturally for our context:
-
-- Replace "React" with "Leptos" where it appears in descriptive text.
-- Replace package references (`@base-ui/react/tooltip`) with Pith UI crate paths (`pith_ui::tooltip`).
-- Keep accessibility guidance verbatim — it applies equally.
-- Keep conceptual explanations (e.g., "Alternatives to tooltips") — these are framework-agnostic.
-
-## API reference
-
-Base-ui's API reference has, for each part:
-
-1. **Description** — what the part does and what element it renders
-2. **Props table** — Prop, Type, Default, Description
-3. **Data Attributes table** — Attribute, Type, Description
-4. **CSS Variables table** (some parts) — Variable, Type, Default, Description
-
-### Components (`src/components/demo.rs`)
-
-The API reference uses these components:
-
-- **`ApiPart`** — wraps each component part with name, description, and rendered element. Takes `children` containing `ApiPartProps` and/or `ApiPartDataAttrs`.
-- **`ApiPartProps`** — an accordion-based props table. Header row shows Prop/Type/Default. Each child `Prop` renders as an accordion item (collapsed: table row; expanded: detail panel with Name, Description, Type, Default).
-- **`ApiPartDataAttrs`** — a simple 2-column table (Attribute, Description). Each child `DataAttr` renders as a table row.
-- **`Prop`** — a single prop definition (name, type, default, description). Renders as an `AccordionItem`.
-- **`DataAttr`** — a single data attribute definition (name, description). Renders as a `<tr>`.
-
-### Usage pattern
-
-```rust
-<ApiPart name="ComponentName" description="What it does." renders="<div>">
-    <ApiPartProps>
-        <Prop name="value" r#type="MaybeProp<String>" description="The controlled value." />
-        <Prop name="disabled" r#type="MaybeProp<bool>" default="false" description="Whether to disable." />
-    </ApiPartProps>
-    <ApiPartDataAttrs>
-        <DataAttr name="data-state" description="\"open\" or \"closed\"" />
-    </ApiPartDataAttrs>
-</ApiPart>
+```
+src/pages/components/<component>/
+├── mod.rs                      # Thin wrapper: calls md_page::render_md_page()
+├── <component>.md              # All page content (frontmatter, prose, API ref)
+└── demos/
+    ├── mod.rs                  # Exports demo components only (no Section wrappers)
+    ├── <component>_basic.rs    # Primary demo
+    ├── <component>_nested.rs   # Example demos...
+    └── ...
 ```
 
-Parts with no props or data attributes omit the sub-components:
+The markdown parser lives at `src/components/md_page.rs` and is shared by all component pages.
 
-```rust
-<ApiPart name="ComponentNameList" description="Container for items." renders="<ul>" />
-```
-
-### Deriving prop information
-
-- **Prop names and Rust types**: read from the Pith UI component source (snake_case, `MaybeProp<T>`, `Option<Callback<T>>`, etc.)
-- **Descriptions**: adapt from the base-ui markdown
-- **Data attributes**: mirror base-ui's `data-*` attributes since Pith UI uses the same conventions
-- **Common props** (`as_child`, `node_ref`, `children`): omit from individual tables — mention once at the top of the API Reference section
-
-## Page structure template
+### mod.rs pattern
 
 ```rust
 use leptos::prelude::*;
-use crate::components::*;
+use crate::components::extract_demo;
 
 mod demos;
 use demos::*;
+use crate::components::md_page::{self, DemoEntry};
 
 #[component]
 pub fn ComponentNamePage() -> impl IntoView {
-    view! {
-        <div class="max-w-3xl">
-            // Title + description from base-ui frontmatter
-            <ComponentPageHeader
-                title="Component Name"
-                description="Description from base-ui subtitle/description."
-                features=&["Accessible", "Keyboard support", ...]
-            />
-
-            // Primary demo
-            <DocSection title="Demo">
-                <ComponentNameBasicSection />
-            </DocSection>
-
-            // Usage guidelines — mirror base-ui bullet points
-            <DocSection title="Usage guidelines">
-                // ...
-            </DocSection>
-
-            // Anatomy — transliterated composition example
-            <DocSection title="Anatomy">
-                // ...
-            </DocSection>
-
-            // Additional examples — one DocSection per base-ui example
-            <DocSection title="Example Name">
-                <ComponentNameExampleSection />
-            </DocSection>
-
-            // API reference — accordion-based props tables
-            <DocSection title="API Reference">
-                <ApiPart name="ComponentName" description="..." renders="<div>">
-                    <ApiPartProps>
-                        <Prop name="value" r#type="MaybeProp<String>" description="..." />
-                    </ApiPartProps>
-                    <ApiPartDataAttrs>
-                        <DataAttr name="data-state" description="..." />
-                    </ApiPartDataAttrs>
-                </ApiPart>
-            </DocSection>
-        </div>
-    }
+    md_page::render_md_page(
+        include_str!("<component>.md"),
+        |name| match name {
+            "<component>_basic" => Some(DemoEntry {
+                view: ViewFn::from(|| view! { <ComponentBasic /> }),
+                source: extract_demo(include_str!("demos/<component>_basic.rs")),
+            }),
+            // ... one entry per demo
+            _ => None,
+        },
+    )
 }
 ```
 
-## Checklist for a new or updated component page
+### Markdown format
+
+See `navigation_menu/navigation_menu.md` for the canonical example. Key conventions:
+
+**Frontmatter** — title, description, features array:
+```yaml
+---
+title: Navigation Menu
+description: A collection of links and menus for website navigation.
+features:
+  - Accessible
+  - Keyboard navigation
+---
+```
+
+**Demo markers** — `<!-- demo: name -->` inserts a `DemoTabs` component:
+```markdown
+### Basic
+
+Description of the demo.
+
+<!-- demo: navigation_menu_basic -->
+```
+
+**Inline code** — two flavors:
+- `` `~ComponentName~` `` → accent-colored code (component references)
+- `` `code` `` → standard code (HTML elements, props, CSS properties)
+
+**Code fences** — rendered with Prism.js highlighting and a copy button:
+````markdown
+```rust
+<NavigationMenu>
+    <NavigationMenuList />
+</NavigationMenu>
+```
+````
+
+**API Reference** — structured markdown tables that the parser converts to accordion-based prop tables:
+```markdown
+## API Reference
+
+All components also accept `as_child`, `node_ref`, and `children` props.
+
+### ComponentName
+
+Description of what it does.
+Renders a `<nav>` element.
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| value | `MaybeProp<String>` | — | The controlled value. |
+
+| Attribute | Description |
+|---|---|
+| data-state | "open" or "closed". |
+```
+
+## Demo files
+
+Demo files contain **only** the demo component — no Section wrapper, no heading, no description. Those come from the markdown. The `#region demo` markers define what appears in the Code tab.
+
+```rust
+// #region demo
+use leptos::prelude::*;
+use pith_ui::navigation_menu::*;
+
+#[component]
+pub fn NavigationMenuBasic() -> impl IntoView {
+    view! { ... }
+}
+// #endregion demo
+```
+
+### demos/mod.rs
+
+Export only demo components (not Sections):
+```rust
+mod navigation_menu_basic;
+pub use navigation_menu_basic::NavigationMenuBasic;
+```
+
+## Transliterating from base-ui
+
+### Component mapping
+
+| React (base-ui) | Leptos (Pith UI) |
+|---|---|
+| `<Component.Part>` | `<ComponentPart>` (PascalCase, no dot notation) |
+| `className="..."` | `attr:class="..."` |
+| `defaultValue` | `default_value` (snake_case props) |
+| `onValueChange={handler}` | `on_value_change=handler` |
+| `sideOffset={10}` | `side_offset=10.0` (floats for numeric props) |
+| String content | `"String content"` (quoted in `view!` macro) |
+| `import { X } from '@base-ui/react/x'` | `use pith_ui::x::*;` |
+
+### Components that don't exist in pith-ui
+
+Base-ui has components that pith-ui doesn't. These need equivalent patterns:
+
+| Base-ui | Pith-ui equivalent |
+|---|---|
+| `NavigationMenu.Portal > Positioner > Popup` | `NavigationMenuViewport` with `absolute` positioning |
+| `NavigationMenu.Arrow` | Not available — omit (library gap) |
+| `NavigationMenu.Backdrop` | Not available — omit |
+| `NavigationMenu.Icon` | Manual chevron SVG |
+
+### Data attribute differences
+
+| Base-ui | Pith-ui |
+|---|---|
+| `data-[popup-open]` | `data-[state=open]` |
+| `data-[starting-style]` / `data-[ending-style]` | `data-[motion=from-start]` / `data-[motion=to-end]` etc. |
+
+### CSS animations
+
+Base-ui uses `data-starting-style` and `data-ending-style` for CSS transition triggers. Pith-ui uses `data-motion` and `data-state`. Animations are defined in `style/input.css` under `@layer components`:
+
+- `nav-content` class → keyframe animations for `data-motion` (slide enter/exit)
+- `nav-viewport` class → scale+fade for `data-state` (open/close)
+
+### Demo styling alignment
+
+Match base-ui's Tailwind styles precisely, translating `gray-*` → `slate-*`. Key patterns:
+
+- **Root**: `relative min-w-max rounded-lg bg-slate-50 p-1 text-slate-900` (`relative` is required for viewport positioning)
+- **Triggers**: `box-border flex items-center justify-center gap-1.5 h-10 px-3.5 ...`
+- **Link cards**: `block rounded-md p-3 no-underline text-inherit hover:bg-slate-100 ...`
+- **Link titles**: `m-0 mb-1 text-base leading-5 font-medium`
+- **Link descriptions**: `m-0 text-sm leading-5 text-slate-500`
+- **Viewport**: `nav-viewport absolute left-0 top-full z-50 mt-2.5 rounded-lg bg-white shadow-lg shadow-slate-200 outline outline-1 outline-slate-200 overflow-hidden`
+
+### Critical pith-ui patterns
+
+1. **`NavigationMenuViewport` is required** for popups to render correctly. Without it, content renders inline and gets clipped. Place it as a sibling of `NavigationMenuList` inside the root `NavigationMenu`.
+
+2. **`relative` on the root** `NavigationMenu` is required since the viewport uses `absolute` positioning. Base-ui doesn't need this because it portals to `<body>`.
+
+3. **`z-50` on the viewport** ensures popups layer above subsequent page content (code blocks, other sections).
+
+4. **`overflow-hidden` on the viewport** clips animated content during transitions.
+
+5. **Inline nested menus** (like the Product panel with audience tabs): wrap `NavigationMenuList` in a plain `<div>` for grid item sizing, since pith-ui's wrapper elements break `self-stretch`. The `NavigationMenuViewport` goes as a sibling in the grid.
+
+## Prism.js code highlighting
+
+Code blocks use Prism.js. The theme (`prism-tomorrow`) uses attribute selectors that override Tailwind utilities. Our `style/input.css` has a specificity override — see the `pre[class*='language-']` rule. Our CSS must load **after** the Prism CDN stylesheet in `index.html`.
+
+## Checklist for a new component page
 
 1. Read `.claude/reference/base-ui/<component>.md` end to end
-2. Read the Pith UI component source to understand actual prop names and types
-3. Create/update demo files for each base-ui example
-4. Write the page following the structure template above
-5. Mirror all base-ui sections: usage guidelines, anatomy, examples, API reference
-6. Verify the page compiles (`trunk serve`)
+2. Read the Pith UI component source for prop names, types, and data attributes
+3. Create `<component>.md` following the markdown format above
+4. Create demo files — one per base-ui example, matching content/styling precisely
+5. Create `mod.rs` with the parser wrapper and demo lookup
+6. Verify with `trunk serve` — compare rendered output against base-ui's live site

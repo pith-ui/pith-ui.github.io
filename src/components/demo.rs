@@ -109,8 +109,8 @@ pub fn DemoTabs(#[prop(into)] source: String, children: ChildrenFn) -> impl Into
     });
 
     view! {
-        <Tabs default_value="preview".to_string() attr:class="rounded-lg border border-slate-200 overflow-hidden">
-            <TabsList attr:class="flex gap-1 bg-slate-100 p-1 border-b border-slate-200">
+        <Tabs default_value="preview".to_string() attr:class="rounded-lg border border-slate-200">
+            <TabsList attr:class="flex gap-1 bg-slate-100 p-1 rounded-t-lg border-b border-slate-200">
                 <TabsTrigger value="preview".to_string() attr:class=TAB_TRIGGER>
                     "Preview"
                 </TabsTrigger>
@@ -121,7 +121,7 @@ pub fn DemoTabs(#[prop(into)] source: String, children: ChildrenFn) -> impl Into
             <TabsContent value="preview".to_string() attr:class="p-6 bg-white">
                 {children.get_value()()}
             </TabsContent>
-            <TabsContent value="code".to_string() force_mount=true attr:class="data-[state=inactive]:hidden bg-code">
+            <TabsContent value="code".to_string() force_mount=true attr:class="data-[state=inactive]:hidden bg-code rounded-b-lg overflow-hidden">
                 <div class="relative">
                     <CopyButton text=source.get_value() />
                     <ScrollArea r#type=ScrollAreaType::Auto attr:class="bg-code">

@@ -1,11 +1,10 @@
 use leptos::prelude::*;
 
 use crate::components::extract_demo;
+use crate::components::md_page::{self, DemoEntry};
 
 mod demos;
 use demos::*;
-mod md_page;
-use md_page::DemoEntry;
 
 #[component]
 pub fn NavigationMenuPage() -> impl IntoView {
