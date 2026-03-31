@@ -148,7 +148,31 @@ pub use navigation_menu_basic::NavigationMenuBasic;
 
 ## Transliterating from base-ui
 
-### Component mapping
+### Document structure translation
+
+Base-ui's markdown has a different section layout than what we produce. Key transformations:
+
+| Base-ui structure | Pith-ui structure |
+|---|---|
+| `title` + `subtitle` + `description` frontmatter | `title` + `description` (use subtitle text) + `features` array |
+| Intro paragraph repeating the description | **Drop** — frontmatter description is sufficient |
+| Per-example `## Demo` with `### Tailwind` / `### CSS Modules` sub-sections | Single `## Demo` (primary) + `## Examples` (additional); CSS Modules variants are **dropped** |
+| Full inline code blocks for each demo | `<!-- demo: name -->` markers referencing separate demo files |
+| `### Custom links`, `### Large menus` as top-level sections | Move under `## Examples` as sub-sections |
+
+**Section ordering**: `# Title` → `## Demo` (### Basic) → `## Anatomy` → `## Examples` (### variant headings, ### Custom links, ### Large menus) → `## API Reference`
+
+### Prose transliteration
+
+| Base-ui prose pattern | Pith-ui prose pattern |
+|---|---|
+| `<NavigationMenu.Root>` (component references in angle brackets) | `` `~NavigationMenu~` `` (accent-colored inline code, no angle brackets) |
+| `<div>`, `<button>`, `<nav>` (HTML elements) | `` `<div>` ``, `` `<button>` ``, `` `<nav>` `` (standard backticks, keep angle brackets) |
+| `defaultValue`, `keepMounted` (prop names) | `` `default_value` ``, `` `force_mount` `` (snake_case, standard backticks) |
+| `.Popup`, `.Content` (CSS class refs in prose) | `.popup`, `.content` (lowercase) |
+| "component" / "part" qualifiers | Drop — just use the component name |
+
+### Component mapping (code)
 
 | React (base-ui) | Leptos (Pith UI) |
 |---|---|
@@ -171,12 +195,22 @@ Base-ui has components that pith-ui doesn't. These need equivalent patterns:
 | `NavigationMenu.Backdrop` | Not available — omit |
 | `NavigationMenu.Icon` | Manual chevron SVG |
 
+### Components that exist in pith-ui but not base-ui
+
+Some pith-ui components have no base-ui counterpart. Document these from the pith-ui source, not from base-ui:
+
+| Pith-ui | Notes |
+|---|---|
+| `NavigationMenuSub` | Sub-navigation wrapper for secondary lists inside content |
+| `NavigationMenuIndicator` | Animated indicator following the active trigger |
+
 ### Data attribute differences
 
 | Base-ui | Pith-ui |
 |---|---|
 | `data-[popup-open]` | `data-[state=open]` |
 | `data-[starting-style]` / `data-[ending-style]` | `data-[motion=from-start]` / `data-[motion=to-end]` etc. |
+| `data-open` / `data-closed` | `data-[state=open]` / `data-[state=closed]` |
 
 ### CSS animations
 
@@ -184,6 +218,25 @@ Base-ui uses `data-starting-style` and `data-ending-style` for CSS transition tr
 
 - `nav-content` class → keyframe animations for `data-motion` (slide enter/exit)
 - `nav-viewport` class → scale+fade for `data-state` (open/close)
+
+### API reference translation
+
+**The API reference must be written from the pith-ui component source**, not mechanically translated from base-ui. The libraries diverge significantly in prop names, types, and available features.
+
+Key differences from base-ui's API tables:
+
+| Base-ui pattern | Pith-ui pattern |
+|---|---|
+| React types (`string`, `boolean`, `ReactElement`) | Rust types (`MaybeProp<String>`, `MaybeProp<bool>`, `Option<Callback<...>>`) |
+| Per-component `className`, `style`, `render` props | **Drop** — instead add a shared note: "All components also accept `as_child`, `node_ref`, and `children` props." |
+| `keepMounted` prop | `force_mount` prop |
+| `closeOnClick` on Link | `on_select` callback on Link |
+| `render` prop for composition | `as_child` prop |
+| `delay` / `closeDelay` on Root | `delay_duration` / `skip_delay_duration` on Root |
+| `nativeButton` on Trigger | `disabled` on Trigger |
+| `actionsRef`, `onOpenChangeComplete` on Root | Not available — omit |
+
+**Example text transformation**: Base-ui says "The `<NavigationMenu.Link>` part can be customized to render the link from your framework using the `render` prop." → Pith-ui says "`~NavigationMenuLink~` renders an `<a>` element. Use the `as_child` prop to compose it with your router's link component for client-side routing."
 
 ### Demo styling alignment
 
@@ -216,7 +269,13 @@ Code blocks use Prism.js. The theme (`prism-tomorrow`) uses attribute selectors 
 
 1. Read `.claude/reference/base-ui/<component>.md` end to end
 2. Read the Pith UI component source for prop names, types, and data attributes
-3. Create `<component>.md` following the markdown format above
-4. Create demo files — one per base-ui example, matching content/styling precisely
+3. Create `<component>.md`:
+   - **Frontmatter**: `title`, `description` (use base-ui's subtitle text), `features` array
+   - **Section order**: `## Demo` → `## Anatomy` → `## Examples` → `## API Reference`
+   - **Demos**: Use `<!-- demo: name -->` markers, not inline code
+   - **Anatomy**: Reflect pith-ui's actual component tree (no Portal/Positioner/Popup chain)
+   - **Examples prose**: Translate `<Component.Part>` → `` `~ComponentPart~` ``, drop CSS Modules variants
+   - **API Reference**: Write from pith-ui source — do NOT mechanically translate base-ui's React types. Drop `className`/`style`/`render` rows; add shared props note
+4. Create demo files — one per base-ui Tailwind example, matching content/styling precisely (skip CSS Modules variants)
 5. Create `mod.rs` with the parser wrapper and demo lookup
 6. Verify with `trunk serve` — compare rendered output against base-ui's live site
