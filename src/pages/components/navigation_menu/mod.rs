@@ -1,36 +1,30 @@
 use leptos::prelude::*;
 
-use crate::components::*;
+use crate::components::extract_demo;
+
 mod demos;
-use demos::NavigationMenuBasicSection;
+use demos::*;
+mod md_page;
+use md_page::DemoEntry;
 
 #[component]
 pub fn NavigationMenuPage() -> impl IntoView {
-    view! {
-        <div class="max-w-3xl">
-            <ComponentPageHeader
-                title="Navigation Menu"
-                description="A collection of links for navigating websites, with support for expandable content panels."
-                features=&["Accessible", "Keyboard navigation", "Submenus with viewport", "Active indicator", "RTL support"]
-            />
-
-            <DocSection title="Demo">
-                <NavigationMenuBasicSection />
-            </DocSection>
-
-            <DocSection title="API Reference">
-                <div class="divide-y divide-slate-100">
-                    <PartItem name="NavigationMenu" description="Root component. Manages open state." />
-                    <PartItem name="NavigationMenuList" description="Container for menu items." />
-                    <PartItem name="NavigationMenuItem" description="A top-level item (expandable or link)." />
-                    <PartItem name="NavigationMenuTrigger" description="Button that opens content panel." />
-                    <PartItem name="NavigationMenuContent" description="The expandable content panel." />
-                    <PartItem name="NavigationMenuLink" description="A navigation link." />
-                    <PartItem name="NavigationMenuSub" description="A sub-navigation for secondary lists." />
-                    <PartItem name="NavigationMenuIndicator" description="Active indicator under the trigger." />
-                    <PartItem name="NavigationMenuViewport" description="Shared viewport for content panels." />
-                </div>
-            </DocSection>
-        </div>
-    }
+    md_page::render_md_page(
+        include_str!("navigation_menu.md"),
+        |name| match name {
+            "navigation_menu_basic" => Some(DemoEntry {
+                view: ViewFn::from(|| view! { <NavigationMenuBasic /> }),
+                source: extract_demo(include_str!("demos/navigation_menu_basic.rs")),
+            }),
+            "navigation_menu_nested" => Some(DemoEntry {
+                view: ViewFn::from(|| view! { <NavigationMenuNested /> }),
+                source: extract_demo(include_str!("demos/navigation_menu_nested.rs")),
+            }),
+            "navigation_menu_inline" => Some(DemoEntry {
+                view: ViewFn::from(|| view! { <NavigationMenuInline /> }),
+                source: extract_demo(include_str!("demos/navigation_menu_inline.rs")),
+            }),
+            _ => None,
+        },
+    )
 }

@@ -72,6 +72,14 @@
     }
 }
 
+/* Prism theme uses `pre[class*="language-"] { font-size: 1em }` which has
+   higher specificity than Tailwind utility classes. Override it here. */
+pre[class*='language-'],
+code[class*='language-'] {
+    font-size: var(--text-xs);
+    line-height: var(--text-xs--line-height);
+}
+
 @layer components {
     /* Accordion animation classes */
     .accordion-content[data-state='open'] {
