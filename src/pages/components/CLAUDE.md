@@ -124,12 +124,14 @@ Renders a `<nav>` element.
 
 ## Demo files
 
-Demo files contain **only** the demo component — no Section wrapper, no heading, no description. Those come from the markdown. The `#region demo` markers define what appears in the Code tab.
+Demo files contain **only** the demo component — no Section wrapper, no heading, no description. Those come from the markdown. The `#region demo` markers wrap the **entire file** (use directives, const class strings, helper functions, and the component) so that everything appears in the Code tab.
 
 ```rust
 // #region demo
 use leptos::prelude::*;
 use pith_ui::navigation_menu::*;
+
+const TRIGGER: &str = "box-border flex items-center ...";
 
 #[component]
 pub fn NavigationMenuBasic() -> impl IntoView {
@@ -137,6 +139,8 @@ pub fn NavigationMenuBasic() -> impl IntoView {
 }
 // #endregion demo
 ```
+
+Each base-ui example that has a full demo (Tailwind/CSS Modules code) should be a standalone demo file rendered via `<!-- demo: name -->` in the markdown. Code-only prose examples (like "Custom links" or "Large menus" in NavigationMenu) stay as code blocks in the markdown.
 
 ### demos/mod.rs
 

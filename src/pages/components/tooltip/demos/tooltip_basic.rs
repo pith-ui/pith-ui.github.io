@@ -1,7 +1,6 @@
+// #region demo
 use leptos::prelude::*;
 use pith_ui::tooltip::*;
-
-use crate::components::{extract_demo, DemoTabs};
 
 const TRIGGER: &str = "rounded-lg border border-slate-200 bg-white px-4 py-2 \
     text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 transition-colors";
@@ -11,7 +10,6 @@ const CONTENT: &str = "tooltip-content rounded-md bg-slate-900 px-3 py-1.5 text-
     text-white shadow-md";
 const ARROW: &str = "fill-slate-900";
 
-// #region demo
 #[component]
 pub fn TooltipBasic() -> impl IntoView {
     view! {
@@ -51,17 +49,3 @@ pub fn TooltipBasic() -> impl IntoView {
     }
 }
 // #endregion demo
-
-#[component]
-pub fn TooltipBasicSection() -> impl IntoView {
-    view! {
-        <h3 class="mb-3 text-lg font-semibold text-slate-900">"Basic"</h3>
-        <p class="mb-4 text-slate-600">
-            "Tooltips on hover and focus, with a shared provider for coordinated open delays."
-        </p>
-
-        <DemoTabs source=extract_demo(include_str!("tooltip_basic.rs"))>
-            <TooltipBasic />
-        </DemoTabs>
-    }
-}

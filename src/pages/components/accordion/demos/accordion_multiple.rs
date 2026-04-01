@@ -19,23 +19,22 @@ fn chevron_down() -> impl IntoView {
 }
 
 #[component]
-pub fn AccordionBasic() -> impl IntoView {
+pub fn AccordionMultipleDemo() -> impl IntoView {
     view! {
-        <AccordionSingle
-            default_value="item-1".to_string()
-            collapsible=true
+        <AccordionMultiple
+            default_values=vec!["item-1".to_string()]
             attr:class=ROOT
         >
             <AccordionItem value="item-1".to_string()>
                 <AccordionHeader>
                     <AccordionTrigger attr:class=TRIGGER>
-                        "Is it accessible?"
+                        "What is Pith UI?"
                         <span class=CHEVRON>{chevron_down()}</span>
                     </AccordionTrigger>
                 </AccordionHeader>
                 <AccordionContent attr:class=CONTENT>
                     <div class=CONTENT_INNER>
-                        "Yes. It adheres to the WAI-ARIA Accordion pattern and supports full keyboard navigation."
+                        "Pith UI is a library of high-quality unstyled Leptos components for design systems and web apps."
                     </div>
                 </AccordionContent>
             </AccordionItem>
@@ -43,13 +42,13 @@ pub fn AccordionBasic() -> impl IntoView {
             <AccordionItem value="item-2".to_string()>
                 <AccordionHeader>
                     <AccordionTrigger attr:class=TRIGGER>
-                        "Is it unstyled?"
+                        "How do I get started?"
                         <span class=CHEVRON>{chevron_down()}</span>
                     </AccordionTrigger>
                 </AccordionHeader>
                 <AccordionContent attr:class=CONTENT>
                     <div class=CONTENT_INNER>
-                        "Yes. It ships with zero styles, giving you full control over the look and feel."
+                        "Head to the \"Quick start\" guide in the docs. If you've used unstyled libraries before, you'll feel at home."
                     </div>
                 </AccordionContent>
             </AccordionItem>
@@ -57,21 +56,17 @@ pub fn AccordionBasic() -> impl IntoView {
             <AccordionItem value="item-3".to_string()>
                 <AccordionHeader>
                     <AccordionTrigger attr:class=TRIGGER>
-                        "Can it be animated?"
+                        "Can I use it for my project?"
                         <span class=CHEVRON>{chevron_down()}</span>
                     </AccordionTrigger>
                 </AccordionHeader>
                 <AccordionContent attr:class=CONTENT>
                     <div class=CONTENT_INNER>
-                        "Yes. Use CSS animations with the "
-                        <code class="rounded bg-slate-100 px-1 text-xs">"data-state"</code>
-                        " attribute and "
-                        <code class="rounded bg-slate-100 px-1 text-xs">"--accordion-content-height"</code>
-                        " custom property."
+                        "Of course! Pith UI is free and open source."
                     </div>
                 </AccordionContent>
             </AccordionItem>
-        </AccordionSingle>
+        </AccordionMultiple>
     }
 }
 // #endregion demo

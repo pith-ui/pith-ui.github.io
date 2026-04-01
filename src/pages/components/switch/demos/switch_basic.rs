@@ -1,8 +1,7 @@
+// #region demo
 use leptos::prelude::*;
 use pith_ui::label::Label;
 use pith_ui::switch::*;
-
-use crate::components::{extract_demo, DemoTabs};
 
 const SWITCH: &str = "relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full \
     border-2 border-transparent bg-slate-200 transition-colors \
@@ -16,7 +15,6 @@ const THUMB_DISABLED: &str = "pointer-events-none block h-5 w-5 translate-x-0 ro
 const LABEL: &str = "text-sm font-medium text-slate-700 select-none";
 const LABEL_DISABLED: &str = "text-sm text-slate-400 select-none";
 
-// #region demo
 #[component]
 pub fn SwitchBasic() -> impl IntoView {
     let (airplane, set_airplane) = signal(false);
@@ -68,17 +66,3 @@ pub fn SwitchBasic() -> impl IntoView {
     }
 }
 // #endregion demo
-
-#[component]
-pub fn SwitchBasicSection() -> impl IntoView {
-    view! {
-        <h3 class="mb-3 text-lg font-semibold text-slate-900">"Basic"</h3>
-        <p class="mb-4 text-slate-600">
-            "Controlled toggles for airplane mode and Wi-Fi, plus a disabled switch."
-        </p>
-
-        <DemoTabs source=extract_demo(include_str!("switch_basic.rs"))>
-            <SwitchBasic />
-        </DemoTabs>
-    }
-}

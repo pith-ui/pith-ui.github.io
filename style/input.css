@@ -54,18 +54,36 @@
     }
 }
 
-@keyframes slide-down {
+@keyframes accordion-open {
     from {
         height: 0;
     }
     to {
-        height: var(--radix-accordion-content-height);
+        height: var(--accordion-content-height);
     }
 }
 
-@keyframes slide-up {
+@keyframes accordion-close {
     from {
-        height: var(--radix-accordion-content-height);
+        height: var(--accordion-content-height);
+    }
+    to {
+        height: 0;
+    }
+}
+
+@keyframes collapsible-open {
+    from {
+        height: 0;
+    }
+    to {
+        height: var(--collapsible-content-height);
+    }
+}
+
+@keyframes collapsible-close {
+    from {
+        height: var(--collapsible-content-height);
     }
     to {
         height: 0;
@@ -81,13 +99,13 @@ code[class*='language-'] {
 }
 
 @layer components {
-    /* Accordion animation classes */
+    /* Accordion open/close animations */
     .accordion-content[data-state='open'] {
-        animation: slide-down 200ms ease-out;
+        animation: accordion-open 200ms ease-out;
     }
 
     .accordion-content[data-state='closed'] {
-        animation: slide-up 200ms ease-out;
+        animation: accordion-close 200ms ease-out;
     }
 
     /* Navigation menu content animations */
@@ -182,13 +200,13 @@ code[class*='language-'] {
         }
     }
 
-    /* Collapsible animation */
+    /* Collapsible open/close animations */
     .collapsible-content[data-state='open'] {
-        animation: slide-down 200ms ease-out;
+        animation: collapsible-open 200ms ease-out;
     }
 
     .collapsible-content[data-state='closed'] {
-        animation: slide-up 200ms ease-out;
+        animation: collapsible-close 200ms ease-out;
     }
 
     /* Dialog overlay animation */
@@ -221,22 +239,22 @@ code[class*='language-'] {
     @keyframes dialog-in {
         from {
             opacity: 0;
-            transform: translate(-50%, -50%) scale(0.96);
+            scale: 0.96;
         }
         to {
             opacity: 1;
-            transform: translate(-50%, -50%) scale(1);
+            scale: 1;
         }
     }
 
     @keyframes dialog-out {
         from {
             opacity: 1;
-            transform: translate(-50%, -50%) scale(1);
+            scale: 1;
         }
         to {
             opacity: 0;
-            transform: translate(-50%, -50%) scale(0.96);
+            scale: 0.96;
         }
     }
 
