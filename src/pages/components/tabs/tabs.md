@@ -116,7 +116,6 @@ Renders a `<button>` element.
 |---|---|
 | data-state | "active" or "inactive". |
 | data-disabled | Present when the trigger is disabled. |
-| data-orientation | "horizontal" or "vertical". |
 
 ### TabsContent
 

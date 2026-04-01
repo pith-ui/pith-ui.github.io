@@ -2,7 +2,16 @@
 
 Pith UI documentation mirrors [base-ui](https://base-ui.com) in structure, examples, and explanatory text — transliterated from React/TSX to Leptos/Rust.
 
-**Golden example**: `src/pages/components/navigation_menu/` — follow this as the reference for all other components.
+**Reference implementations** — all six migrated components follow the markdown-driven pattern and can serve as examples:
+
+| Component | Directory | Notes |
+|---|---|---|
+| Navigation Menu | `navigation_menu/` | Most complex — viewport, indicators, nested menus |
+| Accordion | `accordion/` | Collapsible delegation, single vs multiple variants |
+| Dialog | `dialog/` | Portal, overlay, focus trapping, nested dialogs |
+| Tabs | `tabs/` | Orientation, activation modes |
+| Tooltip | `tooltip/` | Popper-based positioning, provider coordination |
+| Switch | `switch/` | Simplest — good starting template |
 
 ## Reference material
 
