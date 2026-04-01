@@ -1,8 +1,7 @@
+// #region demo
 use leptos::prelude::*;
 use pith_ui::checkbox::*;
 use pith_ui::label::Label;
-
-use crate::components::{extract_demo, DemoTabs};
 
 const CHECKBOX: &str = "flex h-5 w-5 items-center justify-center rounded border \
     border-slate-300 bg-white transition-colors \
@@ -23,7 +22,6 @@ fn check_icon() -> impl IntoView {
     }
 }
 
-// #region demo
 #[component]
 pub fn CheckboxBasic() -> impl IntoView {
     let (checked, set_checked) = signal(CheckedState::True);
@@ -79,17 +77,3 @@ pub fn CheckboxBasic() -> impl IntoView {
     }
 }
 // #endregion demo
-
-#[component]
-pub fn CheckboxBasicSection() -> impl IntoView {
-    view! {
-        <h3 class="mb-3 text-lg font-semibold text-slate-900">"Basic"</h3>
-        <p class="mb-4 text-slate-600">
-            "A controlled checkbox, an uncontrolled checkbox, and a disabled checkbox."
-        </p>
-
-        <DemoTabs source=extract_demo(include_str!("checkbox_basic.rs"))>
-            <CheckboxBasic />
-        </DemoTabs>
-    }
-}

@@ -133,7 +133,9 @@ Renders a `<nav>` element.
 
 ## Demo files
 
-Demo files contain **only** the demo component — no Section wrapper, no heading, no description. Those come from the markdown. The `#region demo` markers wrap the **entire file** (use directives, const class strings, helper functions, and the component) so that everything appears in the Code tab.
+Demo files contain **only** the demo component — no Section wrapper, no heading, no description. Those come from the markdown.
+
+**The `#region demo` / `#endregion demo` markers must wrap the entire file** — `use` directives, `const` class strings, helper functions, and the component. Everything the reader needs to reproduce the demo must appear in the Code tab. Nothing should be above `// #region demo` or below `// #endregion demo`.
 
 ```rust
 // #region demo
@@ -149,7 +151,15 @@ pub fn NavigationMenuBasic() -> impl IntoView {
 // #endregion demo
 ```
 
-Each base-ui example that has a full demo (Tailwind/CSS Modules code) should be a standalone demo file rendered via `<!-- demo: name -->` in the markdown. Code-only prose examples (like "Custom links" or "Large menus" in NavigationMenu) stay as code blocks in the markdown.
+### Every example must be a demo
+
+**All component usage examples must be demos** rendered via `<!-- demo: name -->` markers — never inline code blocks. This guarantees every example compiles, behaves correctly, and gives readers complete, real code they can reference.
+
+The only exceptions where inline code fences are acceptable:
+- **CSS-only snippets** (keyframes, animation classes) — these don't involve component code
+- **Anatomy blocks** — the short import + component tree in the `## Anatomy` section
+
+For each base-ui example that has a Tailwind demo, create a corresponding pith-ui demo file. For base-ui examples that are prose code snippets (like "Labeling a checkbox"), create a focused demo showing that pattern. When a base-ui example uses features that don't exist in pith-ui (e.g., `openOnHover`, `createHandle`), omit the example rather than faking it.
 
 ### demos/mod.rs
 
@@ -171,6 +181,7 @@ Base-ui's markdown has a different section layout than what we produce. Key tran
 | Intro paragraph repeating the description | **Drop** — frontmatter description is sufficient |
 | Per-example `## Demo` with `### Tailwind` / `### CSS Modules` sub-sections | Single `## Demo` (primary) + `## Examples` (additional); CSS Modules variants are **dropped** |
 | Full inline code blocks for each demo | `<!-- demo: name -->` markers referencing separate demo files |
+| Small prose code snippets for example patterns | `<!-- demo: name -->` markers — **every component usage example must be a demo**, not a code block |
 | `### Custom links`, `### Large menus` as top-level sections | Move under `## Examples` as sub-sections |
 
 **Section ordering**: `# Title` → `## Demo` (### Basic) → `## Anatomy` → `## Examples` (### variant headings, ### Custom links, ### Large menus) → `## API Reference`
@@ -289,6 +300,6 @@ Code blocks use Prism.js. The theme (`prism-tomorrow`) uses attribute selectors 
    - **Anatomy**: Reflect pith-ui's actual component tree (no Portal/Positioner/Popup chain)
    - **Examples prose**: Translate `<Component.Part>` → `` `~ComponentPart~` ``, drop CSS Modules variants
    - **API Reference**: Write from pith-ui source — do NOT mechanically translate base-ui's React types. Drop `className`/`style`/`render` rows; add shared props note
-4. Create demo files — one per base-ui Tailwind example, matching content/styling precisely (skip CSS Modules variants)
+4. Create demo files — one per base-ui example (both full Tailwind demos and prose code examples), matching content/styling precisely. Every component usage example must compile as a demo. Skip CSS Modules variants and examples using features absent from pith-ui.
 5. Create `mod.rs` with the parser wrapper and demo lookup
 6. Verify with `trunk serve` — compare rendered output against base-ui's live site

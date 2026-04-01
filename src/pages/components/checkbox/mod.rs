@@ -1,29 +1,29 @@
 use leptos::prelude::*;
 
-use crate::components::*;
+use crate::components::extract_demo;
+use crate::components::md_page::{self, DemoEntry};
+
 mod demos;
-use demos::CheckboxBasicSection;
+use demos::*;
 
 #[component]
 pub fn CheckboxPage() -> impl IntoView {
-    view! {
-        <div class="max-w-3xl">
-            <ComponentPageHeader
-                title="Checkbox"
-                description="A control that allows the user to toggle between checked and unchecked states."
-                features=&["Accessible", "Indeterminate state", "Form integration", "Controlled & uncontrolled"]
-            />
-
-            <DocSection title="Demo">
-                <CheckboxBasicSection />
-            </DocSection>
-
-            <DocSection title="API Reference">
-                <div class="divide-y divide-slate-100">
-                    <PartItem name="Checkbox" description="The root checkbox control. Renders a button with a hidden input." />
-                    <PartItem name="CheckboxIndicator" description="Renders when the checkbox is checked or indeterminate." />
-                </div>
-            </DocSection>
-        </div>
-    }
+    md_page::render_md_page(
+        include_str!("checkbox.md"),
+        |name| match name {
+            "checkbox_basic" => Some(DemoEntry {
+                view: ViewFn::from(|| view! { <CheckboxBasic /> }),
+                source: extract_demo(include_str!("demos/checkbox_basic.rs")),
+            }),
+            "checkbox_indeterminate" => Some(DemoEntry {
+                view: ViewFn::from(|| view! { <CheckboxIndeterminate /> }),
+                source: extract_demo(include_str!("demos/checkbox_indeterminate.rs")),
+            }),
+            "checkbox_form" => Some(DemoEntry {
+                view: ViewFn::from(|| view! { <CheckboxForm /> }),
+                source: extract_demo(include_str!("demos/checkbox_form.rs")),
+            }),
+            _ => None,
+        },
+    )
 }

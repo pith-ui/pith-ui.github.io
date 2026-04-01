@@ -18,14 +18,25 @@ fn bell_icon() -> impl IntoView {
 }
 
 #[component]
-pub fn PopoverBasic() -> impl IntoView {
+pub fn PopoverHover() -> impl IntoView {
+    let (open, set_open) = signal(false);
+
     view! {
-        <Popover>
-            <PopoverTrigger attr:class=TRIGGER>
+        <Popover open=open on_open_change=Callback::new(move |v| set_open.set(v))>
+            <PopoverTrigger
+                attr:class=TRIGGER
+                on:pointerenter=move |_| set_open.set(true)
+                on:pointerleave=move |_| set_open.set(false)
+            >
                 {bell_icon()}
             </PopoverTrigger>
             <PopoverPortal>
-                <PopoverContent attr:class=CONTENT side_offset=8.0>
+                <PopoverContent
+                    attr:class=CONTENT
+                    side_offset=8.0
+                    on:pointerenter=move |_| set_open.set(true)
+                    on:pointerleave=move |_| set_open.set(false)
+                >
                     <PopoverArrow attr:class=ARROW />
                     <h3 class="text-base font-medium">"Notifications"</h3>
                     <p class="text-base text-slate-600">"You are all caught up. Good job!"</p>

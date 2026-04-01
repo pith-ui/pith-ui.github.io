@@ -1,30 +1,21 @@
 use leptos::prelude::*;
 
-use crate::components::*;
+use crate::components::extract_demo;
+use crate::components::md_page::{self, DemoEntry};
+
 mod demos;
-use demos::CollapsibleBasicSection;
+use demos::*;
 
 #[component]
 pub fn CollapsiblePage() -> impl IntoView {
-    view! {
-        <div class="max-w-3xl">
-            <ComponentPageHeader
-                title="Collapsible"
-                description="A component that expands and collapses a panel of content."
-                features=&["Accessible", "Animated", "Controlled & uncontrolled"]
-            />
-
-            <DocSection title="Demo">
-                <CollapsibleBasicSection />
-            </DocSection>
-
-            <DocSection title="API Reference">
-                <div class="divide-y divide-slate-100">
-                    <PartItem name="Collapsible" description="Root component. Manages open/closed state." />
-                    <PartItem name="CollapsibleTrigger" description="Button that toggles the content visibility." />
-                    <PartItem name="CollapsibleContent" description="The content area that expands/collapses." />
-                </div>
-            </DocSection>
-        </div>
-    }
+    md_page::render_md_page(
+        include_str!("collapsible.md"),
+        |name| match name {
+            "collapsible_basic" => Some(DemoEntry {
+                view: ViewFn::from(|| view! { <CollapsibleBasic /> }),
+                source: extract_demo(include_str!("demos/collapsible_basic.rs")),
+            }),
+            _ => None,
+        },
+    )
 }

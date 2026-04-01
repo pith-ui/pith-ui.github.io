@@ -1,54 +1,46 @@
+// #region demo
 use leptos::prelude::*;
 use pith_ui::toggle::Toggle;
 
-use crate::components::{extract_demo, DemoTabs};
+const TOGGLE: &str = "flex size-8 items-center justify-center rounded-sm text-slate-600 \
+    select-none hover:bg-slate-100 active:bg-slate-200 \
+    data-[state=on]:text-slate-900 transition-colors";
 
-const TOGGLE: &str = "inline-flex items-center justify-center rounded-md px-3 py-2 \
-    text-sm font-medium text-slate-700 hover:bg-slate-100 transition-colors \
-    data-[state=on]:bg-accent-100 data-[state=on]:text-accent-700";
+fn heart_filled_icon() -> impl IntoView {
+    view! {
+        <svg width="20" height="20" viewBox="0 0 16 16" fill="currentcolor">
+            <path d="M7.99961 13.8667C7.88761 13.8667 7.77561 13.8315 7.68121 13.7611C7.43321 13.5766 1.59961 9.1963 1.59961 5.8667C1.59961 3.80856 3.27481 2.13336 5.33294 2.13336C6.59054 2.13336 7.49934 2.81176 7.99961 3.3131C8.49988 2.81176 9.40868 2.13336 10.6663 2.13336C12.7244 2.13336 14.3996 3.80803 14.3996 5.8667C14.3996 9.1963 8.56601 13.5766 8.31801 13.7616C8.22361 13.8315 8.11161 13.8667 7.99961 13.8667Z" />
+        </svg>
+    }
+}
 
-// #region demo
+fn heart_outline_icon() -> impl IntoView {
+    view! {
+        <svg width="20" height="20" viewBox="0 0 16 16" fill="currentcolor">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M7.99961 4.8232L7.24456 4.06654C6.84123 3.66235 6.18866 3.20003 5.33294 3.20003C3.86391 3.20003 2.66628 4.39767 2.66628 5.8667C2.66628 6.4079 2.91276 7.1023 3.41967 7.91383C3.91548 8.70759 4.59649 9.51244 5.31278 10.2503C6.38267 11.3525 7.47318 12.2465 7.99983 12.6605C8.52734 12.2456 9.61718 11.352 10.6864 10.2504C11.4027 9.51248 12.0837 8.70762 12.5796 7.91384C13.0865 7.1023 13.3329 6.4079 13.3329 5.8667C13.3329 4.39723 12.1354 3.20003 10.6663 3.20003C9.81056 3.20003 9.15799 3.66235 8.75466 4.06654L7.99961 4.8232ZM7.98574 3.29926C7.48264 2.79938 6.57901 2.13336 5.33294 2.13336C3.27481 2.13336 1.59961 3.80856 1.59961 5.8667C1.59961 9.1963 7.43321 13.5766 7.68121 13.7611C7.77561 13.8315 7.88761 13.8667 7.99961 13.8667C8.11161 13.8667 8.22361 13.8315 8.31801 13.7616C8.56601 13.5766 14.3996 9.1963 14.3996 5.8667C14.3996 3.80803 12.7244 2.13336 10.6663 2.13336C9.42013 2.13336 8.51645 2.79947 8.01337 3.29936C8.00877 3.30393 8.00421 3.30849 7.99967 3.31303C7.99965 3.31305 7.99963 3.31307 7.99961 3.3131C7.99502 3.3085 7.9904 3.30389 7.98574 3.29926Z" />
+        </svg>
+    }
+}
+
 #[component]
 pub fn ToggleBasic() -> impl IntoView {
-    let (bold, set_bold) = signal(false);
+    let (pressed, set_pressed) = signal(false);
 
     view! {
-        <div class="flex items-center gap-2">
+        <div class="flex gap-px rounded-md border border-slate-200 bg-slate-50 p-0.5">
             <Toggle
-                pressed=bold
-                on_pressed_change=move |v| set_bold.set(v)
+                pressed=pressed
+                on_pressed_change=move |v| set_pressed.set(v)
                 attr:class=TOGGLE
-                attr:aria-label="Toggle bold"
+                attr:aria-label="Favorite"
             >
-                <span class="font-bold">"B"</span>
-            </Toggle>
-            <Toggle
-                attr:class=TOGGLE
-                attr:aria-label="Toggle italic"
-            >
-                <span class="italic">"I"</span>
-            </Toggle>
-            <Toggle
-                attr:class=TOGGLE
-                attr:aria-label="Toggle underline"
-            >
-                <span class="underline">"U"</span>
+                {move || if pressed.get() {
+                    heart_filled_icon().into_any()
+                } else {
+                    heart_outline_icon().into_any()
+                }}
             </Toggle>
         </div>
     }
 }
 // #endregion demo
-
-#[component]
-pub fn ToggleBasicSection() -> impl IntoView {
-    view! {
-        <h3 class="mb-3 text-lg font-semibold text-slate-900">"Basic"</h3>
-        <p class="mb-4 text-slate-600">
-            "A set of toggle buttons for text formatting with controlled and uncontrolled variants."
-        </p>
-
-        <DemoTabs source=extract_demo(include_str!("toggle_basic.rs"))>
-            <ToggleBasic />
-        </DemoTabs>
-    }
-}

@@ -1,29 +1,21 @@
 use leptos::prelude::*;
 
-use crate::components::*;
+use crate::components::extract_demo;
+use crate::components::md_page::{self, DemoEntry};
 
 mod demos;
-use demos::SeparatorBasicSection;
+use demos::*;
 
 #[component]
 pub fn SeparatorPage() -> impl IntoView {
-    view! {
-        <div class="max-w-3xl">
-            <ComponentPageHeader
-                title="Separator"
-                description="Visually or semantically separates content."
-                features=&["Accessible", "Horizontal & vertical", "Decorative mode"]
-            />
-
-            <DocSection title="Demo">
-                <SeparatorBasicSection />
-            </DocSection>
-
-            <DocSection title="API Reference">
-                <div class="divide-y divide-slate-100">
-                    <PartItem name="Separator" description="A horizontal or vertical line. When decorative=true, it is hidden from screen readers." />
-                </div>
-            </DocSection>
-        </div>
-    }
+    md_page::render_md_page(
+        include_str!("separator.md"),
+        |name| match name {
+            "separator_basic" => Some(DemoEntry {
+                view: ViewFn::from(|| view! { <SeparatorBasic /> }),
+                source: extract_demo(include_str!("demos/separator_basic.rs")),
+            }),
+            _ => None,
+        },
+    )
 }

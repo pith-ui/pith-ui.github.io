@@ -1,29 +1,21 @@
 use leptos::prelude::*;
 
-use crate::components::*;
+use crate::components::extract_demo;
+use crate::components::md_page::{self, DemoEntry};
 
 mod demos;
-use demos::ToggleBasicSection;
+use demos::*;
 
 #[component]
 pub fn TogglePage() -> impl IntoView {
-    view! {
-        <div class="max-w-3xl">
-            <ComponentPageHeader
-                title="Toggle"
-                description="A two-state button that can be switched on or off."
-                features=&["Accessible", "Keyboard toggle", "Controlled & uncontrolled"]
-            />
-
-            <DocSection title="Demo">
-                <ToggleBasicSection />
-            </DocSection>
-
-            <DocSection title="API Reference">
-                <div class="divide-y divide-slate-100">
-                    <PartItem name="Toggle" description="A button that can be toggled on or off. Exposes data-state='on'|'off'." />
-                </div>
-            </DocSection>
-        </div>
-    }
+    md_page::render_md_page(
+        include_str!("toggle.md"),
+        |name| match name {
+            "toggle_basic" => Some(DemoEntry {
+                view: ViewFn::from(|| view! { <ToggleBasic /> }),
+                source: extract_demo(include_str!("demos/toggle_basic.rs")),
+            }),
+            _ => None,
+        },
+    )
 }

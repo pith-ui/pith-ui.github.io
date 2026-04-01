@@ -1,30 +1,21 @@
 use leptos::prelude::*;
 
-use crate::components::*;
+use crate::components::extract_demo;
+use crate::components::md_page::{self, DemoEntry};
 
 mod demos;
-use demos::ProgressBasicSection;
+use demos::*;
 
 #[component]
 pub fn ProgressPage() -> impl IntoView {
-    view! {
-        <div class="max-w-3xl">
-            <ComponentPageHeader
-                title="Progress"
-                description="Displays an indicator showing the completion progress of a task."
-                features=&["Accessible", "Determinate & indeterminate", "Custom max value"]
-            />
-
-            <DocSection title="Demo">
-                <ProgressBasicSection />
-            </DocSection>
-
-            <DocSection title="API Reference">
-                <div class="divide-y divide-slate-100">
-                    <PartItem name="Progress" description="The root progress container. Sets aria attributes." />
-                    <PartItem name="ProgressIndicator" description="The visual indicator showing completion." />
-                </div>
-            </DocSection>
-        </div>
-    }
+    md_page::render_md_page(
+        include_str!("progress.md"),
+        |name| match name {
+            "progress_basic" => Some(DemoEntry {
+                view: ViewFn::from(|| view! { <ProgressBasic /> }),
+                source: extract_demo(include_str!("demos/progress_basic.rs")),
+            }),
+            _ => None,
+        },
+    )
 }
